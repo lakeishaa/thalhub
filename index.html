@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thalassemia Trait Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f5f7fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    #quiz-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+      display: none;
+    }
+
+    .question {
+      margin-bottom: 20px;
+    }
+
+    .answers button {
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .answers button:hover {
+      background-color: #0056b3;
+    }
+
+    #start-btn, #restart-btn {
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #start-btn:hover, #restart-btn:hover {
+      background-color: #218838;
+    }
+
+    #result {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Do I have Thalassemia Trait? Take the quiz!</h1>
+  <button id="start-btn">Start Quiz</button>
+
+  <div id="quiz-container">
+    <div id="question" class="question"></div>
+    <div class="answers">
+      <button onclick="submitAnswer('Yes')">Yes</button>
+      <button onclick="submitAnswer('No')">No</button>
+      <button onclick="submitAnswer('Unsure')">Unsure</button>
+    </div>
+    <div id="result"></div>
+    <button id="restart-btn" style="display:none;" onclick="restartQuiz()">Restart Quiz</button>
+  </div>
+
+  <script>
+    const questions = [
+      "Do you often feel unusually tired or fatigued, even with enough rest?",
+      "Have you ever been diagnosed with mild or unexplained anemia?",
+      "Do you have a family history of Thalassemia or other blood disorders?",
+      "Have you noticed paleness in your skin or a slight yellowish tint (jaundice)?",
+      "Do you experience shortness of breath or dizziness with mild physical activity?",
+      "Have you been told you have low hemoglobin levels in a routine blood test?",
+      "Do you bruise easily or have frequent nosebleeds?",
+      "Have you ever been recommended to take iron supplements but didn’t feel an improvement?",
+      "Have you lived in or have ancestry from regions where Thalassemia is more common (e.g., Mediterranean, Southeast Asia, Middle East, Africa)?",
+      "Have you ever done a Complete Blood Count (CBC) or hemoglobin electrophoresis test?"
+    ];
+
+    let currentQuestion = 0;
+    let answers = { Yes: 0, No: 0, Unsure: 0 };
+
+    const startBtn = document.getElementById('start-btn');
+    const quizContainer = document.getElementById('quiz-container');
+    const questionEl = document.getElementById('question');
+    const resultEl = document.getElementById('result');
+    const restartBtn = document.getElementById('restart-btn');
+
+    startBtn.addEventListener('click', startQuiz);
+
+    function startQuiz() {
+      startBtn.style.display = 'none';
+      quizContainer.style.display = 'block';
+      showQuestion();
+    }
+
+    function showQuestion() {
+      if (currentQuestion < questions.length) {
+        questionEl.textContent = questions[currentQuestion];
+        resultEl.textContent = '';
+      } else {
+        showResult();
+      }
+    }
+
+    function submitAnswer(answer) {
+      answers[answer]++;
+      currentQuestion++;
+      showQuestion();
+    }
+
+    function showResult() {
+      let majority = Object.keys(answers).reduce((a, b) => answers[a] > answers[b] ? a : b);
+
+      if (majority === 'Yes') {
+        resultEl.innerHTML = `
+          <strong>Your answers suggest that you might carry a Thalassemia trait.</strong><br><br>
+          Don't worry—this is simply valuable information that can help you make informed health decisions. 
+          It's a good idea to get a screening test to learn more about your red blood cells. 
+          Curious about what to ask your doctor or how to get tested? <a href="#">Click here to find out more!</a>
+        `;
+      } else if (majority === 'Unsure') {
+        resultEl.innerHTML = `
+          <strong>You’re not quite sure, and that’s okay!</strong><br><br>
+          Many people don’t realize they could be carriers of Thalassemia until they take a simple blood test. 
+          Understanding your red blood cells can help you make informed health decisions. 
+          <a href="#">Learn more about Thalassemia screening and what to ask your doctor here.</a>
+        `;
+      } else {
+        resultEl.innerHTML = `
+          <strong>Good news!</strong><br><br>
+          It looks like your red blood cells are likely functioning normally, allowing you to stay active without easily feeling tired. 
+          However, regular health checks are always a good idea. 
+          Consider getting a Complete Blood Count (CBC) test to ensure your blood health is in top shape. 
+          <a href="#">Want to know more about Thalassemia and screening options? Click here.</a>
+        `;
+      }
+
+      document.querySelector('.answers').style.display = 'none';
+      restartBtn.style.display = 'inline-block';
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      answers = { Yes: 0, No: 0, Unsure: 0 };
+      document.querySelector('.answers').style.display = 'block';
+      resultEl.textContent = '';
+      restartBtn.style.display = 'none';
+      showQuestion();
+    }
+  </script>
+
+</body>
+</html>
